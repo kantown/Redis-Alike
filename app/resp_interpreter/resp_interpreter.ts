@@ -11,12 +11,13 @@ const ping = (connection: Socket, splittedBuffer: string[]) => {
 
 const echo = (connection: Socket, splittedBuffer: string[]) => {
   const echoMsg = splittedBuffer.slice(2).join(EOL);
-
+  console.log("echoMsg", echoMsg);
   connection.write(toSimpleString(echoMsg));
 };
 
 const handleKnownCommands = (connection: Socket, splittedBuffer: string[]) => {
   const command = splittedBuffer[0].toLocaleUpperCase();
+  console.log("handleKnownCommands splittedBuffer", splittedBuffer);
 
   switch (command) {
     case RECOGNIZABLE_COMMANDS.ECHO:
@@ -38,6 +39,7 @@ const handleComplexArrayInput = (
   splittedBuffer: string[]
 ) => {
   const [encodedLength, ...restOfCommand] = splittedBuffer.slice(1);
+  console.log("restOfCommand", restOfCommand);
 
   handleKnownCommands(connection, restOfCommand);
 };
