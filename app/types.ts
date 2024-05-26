@@ -8,3 +8,4 @@ export enum RECOGNIZABLE_COMMANDS {
 }
 
 export const EOL = "\r\n";
+export const Null = "$-1";

@@ -7,6 +7,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
   connection.on("data", (data) => {
     const receivedBuffer = data.toString();
+    console.log(receivedBuffer);
     const requestHandler = new RespInterpreter(
       connection,
       receivedBuffer,

@@ -1,4 +1,4 @@
-import { EOL, RECOGNIZABLE_COMMANDS } from "../types";
+import { EOL, Null, RECOGNIZABLE_COMMANDS } from "../types";
 import { FIRST_BYTES_CODES } from "./types";
 import { Socket } from "net";
 import { toSimpleError, toSimpleString } from "./helpers";
@@ -47,6 +47,11 @@ export class RespInterpreter {
     if (!key) {
       this.throwError("Get is missing Key");
     }
+
+    if (!this.database[key]) {
+      this.connection.write(toSimpleString(Null));
+    }
+
     const lookupValue = this.database[key];
     this.connection.write(toSimpleString(lookupValue));
   };
