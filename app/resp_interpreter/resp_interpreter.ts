@@ -6,7 +6,9 @@ import { toSimpleString } from "./helpers";
 const ping = (connection: Socket, splittedBuffer: string[]) => {
   const customPong = splittedBuffer.slice(1).join(EOL);
 
-  connection.write(toSimpleString(!!customPong.trim() ? customPong : "PONG"));
+  connection.write(
+    toSimpleString(!!customPong.trim() ? customPong : `PONG${EOL}`)
+  );
 };
 
 const echo = (connection: Socket, splittedBuffer: string[]) => {
