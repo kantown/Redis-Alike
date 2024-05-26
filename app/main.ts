@@ -3,7 +3,7 @@ import * as net from "net";
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
   connection.on("data", (data) => {
-    const receivedBuffer = data.toString().trim();
+    const receivedBuffer = data.toString();
     if (receivedBuffer === "PING") {
       connection.write("+PONG\r\n");
     }
