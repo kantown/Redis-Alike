@@ -1,4 +1,4 @@
-import { EOL } from "os";
+import { EOL } from "../types";
 import { FIRST_BYTES_CODES } from "./types";
 
 export const toSimpleString = (message: string) => {
