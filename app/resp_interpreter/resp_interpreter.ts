@@ -50,7 +50,8 @@ export class RespInterpreter {
 
     const foundItem = this.database[key];
     const time = String(new Date().getTime());
-    if (foundItem?.expirationDate > time) {
+
+    if (foundItem?.expirationDate && foundItem.expirationDate < time) {
       delete this.database[key];
       this.connection.write(toSimpleString(Null));
       return;
@@ -67,9 +68,10 @@ export class RespInterpreter {
 
     if (!key || !value) {
       this.throwError("Set is missing Key or Value");
+      return;
     }
 
-    this.database[key].value = value;
+    this.database[key] = { value };
 
     if (px && expirationInMs) {
       const now = String(new Date().getTime());
