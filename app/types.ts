@@ -9,3 +9,6 @@ export enum RECOGNIZABLE_COMMANDS {
 
 export const EOL = "\r\n";
 export const Null = "$-1";
+
+export interface DatabaseType
+  extends Record<string, { value: string; expirationDate: Date }> {}

@@ -1,4 +1,4 @@
-import { EOL, Null, RECOGNIZABLE_COMMANDS } from "../types";
+import { DatabaseType, EOL, Null, RECOGNIZABLE_COMMANDS } from "../types";
 import { FIRST_BYTES_CODES } from "./types";
 import { Socket } from "net";
 import { toSimpleError, toSimpleString } from "./helpers";
@@ -6,13 +6,9 @@ import { toSimpleError, toSimpleString } from "./helpers";
 export class RespInterpreter {
   connection: Socket;
   data: string;
-  database: Record<string, string>;
+  database: DatabaseType;
 
-  constructor(
-    connection: Socket,
-    data: string,
-    database: Record<string, string>
-  ) {
+  constructor(connection: Socket, data: string, database: DatabaseType) {
     this.connection = connection;
     this.data = data;
     this.database = database;
@@ -52,7 +48,7 @@ export class RespInterpreter {
       this.connection.write(toSimpleString(Null));
     }
 
-    const lookupValue = this.database[key];
+    const lookupValue = this.database[key].value;
     this.connection.write(toSimpleString(lookupValue));
   };
 
@@ -63,7 +59,7 @@ export class RespInterpreter {
       this.throwError("Set is missing Key");
     }
 
-    this.database[key] = value;
+    this.database[key].value = value;
 
     this.connection.write(toSimpleString("OK"));
   };

@@ -1,7 +1,8 @@
 import * as net from "net";
 import { RespInterpreter } from "./resp_interpreter/resp_interpreter";
+import { DatabaseType } from "./types";
 
-const database: Record<string, string> = {};
+const database: DatabaseType = {};
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
