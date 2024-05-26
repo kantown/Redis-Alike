@@ -1,13 +1,12 @@
 import * as net from "net";
+import { handleRespInput } from "./resp_interpreter/resp_interpreter";
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
   connection.on("data", (data) => {
     const receivedBuffer = data.toString();
-    // this should handle also next step 
-    if (receivedBuffer === "*1\r\n$4\r\nPING\r\n") {
-      connection.write("+PONG\r\n");
-    }
+
+    handleRespInput(connection, receivedBuffer);
   });
 });
 
