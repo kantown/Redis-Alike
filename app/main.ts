@@ -5,7 +5,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
   connection.on("data", (data) => {
     const receivedBuffer = data.toString();
-    console.log(String.raw(receivedBuffer));
+    console.log(String.raw({ raw: receivedBuffer.split("") }));
     handleRespInput(connection, receivedBuffer);
   });
 });
