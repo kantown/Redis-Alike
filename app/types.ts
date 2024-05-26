@@ -3,4 +3,4 @@ export enum RECOGNIZABLE_COMMANDS {
   PING = "PING",
 }
 
-export const EOL = "\\r\\n";
+export const EOL = "\r\n";
