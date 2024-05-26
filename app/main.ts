@@ -1,8 +1,11 @@
 import * as net from "net";
 import { RespInterpreter } from "./resp_interpreter/resp_interpreter";
 import { DatabaseType } from "./types";
+import { argv } from "node:process";
 
 const database: DatabaseType = {};
+
+const PORT = argv[2] === "--port" ? Number(argv[3] ?? 6379) : 6379;
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
@@ -18,4 +21,4 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
   });
 });
 
-server.listen(6379, "127.0.0.1");
+server.listen(PORT, "127.0.0.1");
