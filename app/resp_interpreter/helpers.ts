@@ -6,5 +6,5 @@ export const toSimpleString = (message: string) => {
 };
 
 export const toSimpleError = (message: string) => {
-  return `${FIRST_BYTES_CODES.SIMPLE_STRING}${message}${EOL}`;
+  return `${FIRST_BYTES_CODES.SIMPLE_ERROR}${message}${EOL}`;
 };

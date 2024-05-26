@@ -1,18 +1,34 @@
 import { EOL, RECOGNIZABLE_COMMANDS } from "../types";
 import { FIRST_BYTES_CODES } from "./types";
 import { Socket } from "net";
-import { toSimpleString } from "./helpers";
+import { toSimpleError, toSimpleString } from "./helpers";
 
 export class RespInterpreter {
   connection: Socket;
   data: string;
-  constructor(connection: Socket, data: string) {
+  database: Record<string, string>;
+
+  constructor(
+    connection: Socket,
+    data: string,
+    database: Record<string, string>
+  ) {
     this.connection = connection;
     this.data = data;
+    this.database = database;
   }
 
+  throwError = (msg?: string) => {
+    if (msg) {
+      this.connection.write(toSimpleError(msg));
+
+      return;
+    }
+    this.connection.write(toSimpleError("Unknown error"));
+  };
+
   ping = (splittedBuffer: string[]) => {
-    const customPong = splittedBuffer.slice(1).map(Boolean).join(EOL);
+    const customPong = splittedBuffer.slice(1).filter(Boolean).join(EOL);
 
     this.connection.write(
       toSimpleString(!!customPong.trim() ? customPong : `PONG`)
@@ -20,9 +36,39 @@ export class RespInterpreter {
   };
 
   echo = (splittedBuffer: string[]) => {
-    const echoMsg = splittedBuffer.slice(2).map(Boolean).join(EOL);
+    const echoMsg = splittedBuffer.slice(2).filter(Boolean).join(EOL);
     console.log("echoMsg", echoMsg);
     this.connection.write(toSimpleString(echoMsg));
+  };
+
+  get = (splittedBuffer: string[]) => {
+    const key = splittedBuffer[2]?.toLowerCase() ?? "";
+
+    if (!key) {
+      this.throwError("Get is missing Key");
+    }
+    const lookupValue = this.database[key];
+    this.connection.write(toSimpleString(lookupValue));
+  };
+
+  set = (splittedBuffer: string[]) => {
+    const key = splittedBuffer[2];
+    const value = splittedBuffer[4];
+    if (!key || !value) {
+      this.throwError("Set is missing Key");
+    }
+
+    this.database[key] = value;
+
+    this.connection.write(toSimpleString("OK"));
+  };
+
+  info = () => {
+    this.connection.write(toSimpleString("OK"));
+  };
+
+  quit = () => {
+    this.connection.destroy();
   };
 
   handleKnownCommands = (splittedBuffer: string[]) => {
@@ -32,11 +78,25 @@ export class RespInterpreter {
     switch (command) {
       case RECOGNIZABLE_COMMANDS.ECHO:
         this.echo(splittedBuffer);
-        break;
+        return;
       case RECOGNIZABLE_COMMANDS.PING:
         this.ping(splittedBuffer);
-        break;
+        return;
+      case RECOGNIZABLE_COMMANDS.GET:
+        this.get(splittedBuffer);
+        return;
+      case RECOGNIZABLE_COMMANDS.SET:
+        this.set(splittedBuffer);
+        return;
+      case RECOGNIZABLE_COMMANDS.INFO:
+        this.info();
+        return;
+      case RECOGNIZABLE_COMMANDS.QUIT:
+        this.quit();
+        return;
     }
+
+    this.throwError("Command was not recognized");
   };
 
   handleBulkString = (splittedBuffer: string[]) => {
