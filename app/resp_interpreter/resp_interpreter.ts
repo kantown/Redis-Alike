@@ -4,9 +4,9 @@ import { Socket } from "net";
 import { toSimpleString } from "./helpers";
 
 const ping = (connection: Socket, splittedBuffer: string[]) => {
-  const customPong = splittedBuffer[2].trim();
+  const customPong = splittedBuffer.slice(1).join(EOL);
 
-  connection.write(toSimpleString(!!customPong ? customPong : "PONG"));
+  connection.write(toSimpleString(!!customPong.trim() ? customPong : "PONG"));
 };
 
 const echo = (connection: Socket, splittedBuffer: string[]) => {
