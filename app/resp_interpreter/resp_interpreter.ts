@@ -45,7 +45,7 @@ export class RespInterpreter {
     }
 
     if (!this.database[key]) {
-      this.connection.write(toSimpleString(Null));
+      this.connection.write(Null);
     }
 
     const foundItem = this.database[key];
@@ -56,7 +56,7 @@ export class RespInterpreter {
       Number(foundItem.expirationDate) < Number(time)
     ) {
       delete this.database[key];
-      this.connection.write(toSimpleString(Null));
+      this.connection.write(Null);
       return;
     }
 
