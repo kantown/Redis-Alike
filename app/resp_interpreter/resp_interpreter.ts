@@ -1,7 +1,7 @@
 import { DatabaseType, EOL, Null, RECOGNIZABLE_COMMANDS } from "../types";
 import { FIRST_BYTES_CODES } from "./types";
 import { Socket } from "net";
-import { toSimpleError, toSimpleString } from "./helpers";
+import { toBulkString, toSimpleError, toSimpleString } from "./helpers";
 
 export class RespInterpreter {
   connection: Socket;
@@ -85,7 +85,8 @@ export class RespInterpreter {
   };
 
   info = (splittedBuffer: string[]) => {
-    this.connection.write("role:master");
+    console.log(toBulkString("role:master"));
+    this.connection.write(toBulkString("role:master"));
   };
 
   quit = () => {

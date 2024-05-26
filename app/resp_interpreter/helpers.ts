@@ -8,3 +8,7 @@ export const toSimpleString = (message: string) => {
 export const toSimpleError = (message: string) => {
   return `${FIRST_BYTES_CODES.SIMPLE_ERROR}${message}${EOL}`;
 };
+
+export const toBulkString = (message: string) => {
+  return `${FIRST_BYTES_CODES.BULK_STRING}${message.length}${EOL}${message}${EOL}`;
+};
