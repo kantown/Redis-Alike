@@ -84,8 +84,8 @@ export class RespInterpreter {
     this.connection.write(toSimpleString("OK"));
   };
 
-  info = () => {
-    this.connection.write(toSimpleString("OK"));
+  info = (splittedBuffer: string[]) => {
+    this.connection.write("role:master");
   };
 
   quit = () => {
@@ -109,7 +109,7 @@ export class RespInterpreter {
         this.set(splittedBuffer);
         return;
       case RECOGNIZABLE_COMMANDS.INFO:
-        this.info();
+        this.info(splittedBuffer);
         return;
       case RECOGNIZABLE_COMMANDS.QUIT:
         this.quit();
