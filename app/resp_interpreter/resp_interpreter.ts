@@ -50,6 +50,7 @@ export const handleRespInput = (connection: Socket, data: string) => {
   }
   const splittedData = data.split(EOL);
   const firstByte = splittedData[0][0] as unknown as FIRST_BYTES_CODES;
+  console.log("splittedData", splittedData);
 
   switch (firstByte) {
     case FIRST_BYTES_CODES.BULK_STRING:
