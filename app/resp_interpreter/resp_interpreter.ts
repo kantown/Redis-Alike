@@ -33,7 +33,7 @@ export class RespInterpreter {
 
   echo = (splittedBuffer: string[]) => {
     const echoMsg = splittedBuffer.slice(2).filter(Boolean).join(EOL);
-    console.log("echoMsg", echoMsg);
+
     this.connection.write(toSimpleString(echoMsg));
   };
 
@@ -48,18 +48,33 @@ export class RespInterpreter {
       this.connection.write(toSimpleString(Null));
     }
 
-    const lookupValue = this.database[key].value;
-    this.connection.write(toSimpleString(lookupValue));
+    const foundItem = this.database[key];
+    const time = String(new Date().getTime());
+    if (foundItem?.expirationDate > time) {
+      delete this.database[key];
+      this.connection.write(toSimpleString(Null));
+      return;
+    }
+
+    this.connection.write(toSimpleString(foundItem.value));
   };
 
   set = (splittedBuffer: string[]) => {
     const key = splittedBuffer[2];
     const value = splittedBuffer[4];
+    const px = splittedBuffer[6];
+    const expirationInMs = splittedBuffer[8];
+
     if (!key || !value) {
-      this.throwError("Set is missing Key");
+      this.throwError("Set is missing Key or Value");
     }
 
     this.database[key].value = value;
+
+    if (px && expirationInMs) {
+      const now = String(new Date().getTime());
+      this.database[key].expirationDate = now;
+    }
 
     this.connection.write(toSimpleString("OK"));
   };
@@ -74,7 +89,6 @@ export class RespInterpreter {
 
   handleKnownCommands = (splittedBuffer: string[]) => {
     const command = splittedBuffer[0].toLocaleUpperCase();
-    console.log("handleKnownCommands splittedBuffer", splittedBuffer);
 
     switch (command) {
       case RECOGNIZABLE_COMMANDS.ECHO:
@@ -107,7 +121,6 @@ export class RespInterpreter {
 
   handleComplexArrayInput = (splittedBuffer: string[]) => {
     const [encodedLength, ...restOfCommand] = splittedBuffer.slice(1);
-    console.log("restOfCommand", restOfCommand);
 
     this.handleKnownCommands(restOfCommand);
   };
@@ -118,7 +131,6 @@ export class RespInterpreter {
     }
     const splittedData = this.data.split(EOL);
     const firstByte = splittedData[0][0] as unknown as FIRST_BYTES_CODES;
-    console.log("splittedData", splittedData);
 
     switch (firstByte) {
       case FIRST_BYTES_CODES.BULK_STRING:

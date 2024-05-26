@@ -11,4 +11,4 @@ export const EOL = "\r\n";
 export const Null = "$-1";
 
 export interface DatabaseType
-  extends Record<string, { value: string; expirationDate: Date }> {}
+  extends Record<string, { value: string; expirationDate: string }> {}
