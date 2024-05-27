@@ -46,6 +46,7 @@ const runNewServer = ({
       port: Number(masterPort),
     });
     const ping = toBulkString("PING");
+    console.log(toMapString([ping]));
     connectionToMaster.write(toMapString([ping]));
   }
 
