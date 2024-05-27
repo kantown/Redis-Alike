@@ -31,15 +31,13 @@ const runNewServer = ({
       "0"
     );
 
+    if (isReplica) {
+      requestHandler.startHandShake();
+    }
+
     connection.on("data", (data) => {
       const receivedBuffer = data.toString();
       requestHandler.handleRespInput(receivedBuffer);
-    });
-
-    connection.on("ready", () => {
-      if (isReplica) {
-        requestHandler.startHandShake();
-      }
     });
   });
 
