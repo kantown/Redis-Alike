@@ -11,7 +11,7 @@ const database: DatabaseType = {};
 const PORT = !!argv[2] ? Number(argv[2] ?? 6379) : 6379;
 const REPLICA_OF = !!argv[3] ? argv[3] : "";
 
-const [replicaAddress, replicaPort] = REPLICA_OF.split(" ");
+const [masterAddress, masterPort] = REPLICA_OF.split(" ");
 
 const runNewServer = ({
   address = "127.0.0.1",
@@ -42,7 +42,8 @@ const runNewServer = ({
 
   if (isReplica) {
     const connectionToMaster = net.connect({
-      port: Number(replicaPort),
+      path: masterAddress,
+      port: Number(masterPort),
     });
     const ping = toBulkString("PING");
     connectionToMaster.write(toMapString([ping]));
