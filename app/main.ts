@@ -32,7 +32,7 @@ const runNewServer = ({
         receivedBuffer,
         database,
         role,
-        REPLICATION_ID,
+        role === "master" ? "0" : REPLICATION_ID,
         "0"
       );
       requestHandler.handleRespInput();
