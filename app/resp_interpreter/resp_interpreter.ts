@@ -167,6 +167,7 @@ export class RespInterpreter {
 
   startHandShake = () => {
     const ping = toBulkString("PING");
+    console.log(toMapString([ping]));
     this.connection.write(toMapString([ping]));
   };
 }
