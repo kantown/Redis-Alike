@@ -41,7 +41,7 @@ const runNewServer = ({
   });
 
   if (isReplica) {
-    const connectionToMaster = net.connect({
+    const connectionToMaster = net.createConnection({
       path: masterAddress,
       port: Number(masterPort),
     });
