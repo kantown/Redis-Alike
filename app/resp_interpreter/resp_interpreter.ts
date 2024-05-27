@@ -10,20 +10,17 @@ import {
 
 export class RespInterpreter {
   connection: Socket;
-  data: string;
   database: DatabaseType;
   information: Record<string, string>;
 
   constructor(
     connection: Socket,
-    data: string,
     database: DatabaseType,
     role: "master" | "slave",
     masterReplId: string,
     masterReplOffset: string
   ) {
     this.connection = connection;
-    this.data = data;
     this.database = database;
     this.information = {
       role,
@@ -151,11 +148,11 @@ export class RespInterpreter {
     this.handleKnownCommands(restOfCommand);
   };
 
-  handleRespInput = () => {
-    if (!this.data) {
+  handleRespInput = (data: string) => {
+    if (!data) {
       return;
     }
-    const splittedData = this.data.split(EOL);
+    const splittedData = data.split(EOL);
     const firstByte = splittedData[0][0] as unknown as FIRST_BYTES_CODES;
 
     switch (firstByte) {
@@ -166,5 +163,10 @@ export class RespInterpreter {
         this.handleComplexArrayInput(splittedData);
         break;
     }
+  };
+
+  startHandShake = () => {
+    const ping = toBulkString("PING");
+    this.connection.write(toMapString([ping]));
   };
 }

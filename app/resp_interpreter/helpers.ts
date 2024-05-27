@@ -13,6 +13,9 @@ export const toBulkString = (message: string) => {
   return `${FIRST_BYTES_CODES.BULK_STRING}${message.length}${EOL}${message}${EOL}`;
 };
 
+/**
+ * @param array {string[]} pass Bulk_String Array to avoid missing EOL
+ */
 export const toMapString = (array: string[]) => {
-  return `*${array.length}${array.join("")}`;
+  return `*${array.length}${EOL}${array.join("")}`;
 };

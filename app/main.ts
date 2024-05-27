@@ -21,21 +21,25 @@ const runNewServer = ({
   port: number;
   role?: "master" | "slave";
 }) => {
-  console.log(address, port, role);
+  const isReplica = role === "master";
   const server: net.Server = net.createServer((connection: net.Socket) => {
-    // Handle connection
+    const requestHandler = new RespInterpreter(
+      connection,
+      database,
+      role,
+      isReplica ? "0" : REPLICATION_ID,
+      "0"
+    );
+
     connection.on("data", (data) => {
       const receivedBuffer = data.toString();
+      requestHandler.handleRespInput(receivedBuffer);
+    });
 
-      const requestHandler = new RespInterpreter(
-        connection,
-        receivedBuffer,
-        database,
-        role,
-        role === "master" ? "0" : REPLICATION_ID,
-        "0"
-      );
-      requestHandler.handleRespInput();
+    connection.on("ready", () => {
+      if (isReplica) {
+        requestHandler.startHandShake()
+      }
     });
   });
 
