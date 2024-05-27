@@ -41,7 +41,7 @@ runNewServer({ port: PORT, role: "master" });
 
 if (!!replicaAddress && !!replicaPort) {
   runNewServer({
-    address: replicaAddress,
+    address: replicaAddress === "localhost" ? "127.0.0.1" : replicaAddress,
     port: Number(replicaPort),
     role: "slave",
   });
