@@ -13,13 +13,17 @@ export class RespInterpreter {
     connection: Socket,
     data: string,
     database: DatabaseType,
-    role: "master" | "slave"
+    role: "master" | "slave",
+    masterReplId: string,
+    masterReplOffset: string
   ) {
     this.connection = connection;
     this.data = data;
     this.database = database;
     this.information = {
       role,
+      master_replid: masterReplId,
+      master_repl_offset: masterReplOffset,
     };
   }
 

@@ -3,6 +3,8 @@ import { RespInterpreter } from "./resp_interpreter/resp_interpreter";
 import { DatabaseType } from "./types";
 import { argv } from "node:process";
 
+const REPLICATION_ID = "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb";
+
 const database: DatabaseType = {};
 
 const PORT = argv[2] === "--port" ? Number(argv[3] ?? 6379) : 6379;
@@ -29,7 +31,9 @@ const runNewServer = ({
         connection,
         receivedBuffer,
         database,
-        role
+        role,
+        REPLICATION_ID,
+        "0"
       );
       requestHandler.handleRespInput();
     });
