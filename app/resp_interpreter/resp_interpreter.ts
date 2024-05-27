@@ -7,11 +7,20 @@ export class RespInterpreter {
   connection: Socket;
   data: string;
   database: DatabaseType;
+  information: Record<string, string>;
 
-  constructor(connection: Socket, data: string, database: DatabaseType) {
+  constructor(
+    connection: Socket,
+    data: string,
+    database: DatabaseType,
+    role: "master" | "slave"
+  ) {
     this.connection = connection;
     this.data = data;
     this.database = database;
+    this.information = {
+      role,
+    };
   }
 
   throwError = (msg?: string) => {
@@ -84,9 +93,10 @@ export class RespInterpreter {
     this.connection.write(toSimpleString("OK"));
   };
 
-  info = (splittedBuffer: string[]) => {
-    console.log(toBulkString("role:master"));
-    this.connection.write(toBulkString("role:master"));
+  info = () => {
+    Object.entries(this.information).forEach(([key, value]) => {
+      this.connection.write(toBulkString(`${key}:${value}`));
+    });
   };
 
   quit = () => {
@@ -110,7 +120,7 @@ export class RespInterpreter {
         this.set(splittedBuffer);
         return;
       case RECOGNIZABLE_COMMANDS.INFO:
-        this.info(splittedBuffer);
+        this.info();
         return;
       case RECOGNIZABLE_COMMANDS.QUIT:
         this.quit();
