@@ -1,7 +1,12 @@
 import { DatabaseType, EOL, Null, RECOGNIZABLE_COMMANDS } from "../types";
 import { FIRST_BYTES_CODES } from "./types";
 import { Socket } from "net";
-import { toBulkString, toSimpleError, toSimpleString } from "./helpers";
+import {
+  toBulkString,
+  toMapString,
+  toSimpleError,
+  toSimpleString,
+} from "./helpers";
 
 export class RespInterpreter {
   connection: Socket;
@@ -98,9 +103,10 @@ export class RespInterpreter {
   };
 
   info = () => {
-    Object.entries(this.information).forEach(([key, value]) => {
-      this.connection.write(toBulkString(`${key}:${value}`));
-    });
+    const mappedInfo = Object.entries(this.information).map(
+      ([key, value]) => `${key}:${value}`
+    );
+    this.connection.write(toBulkString(mappedInfo.join("")));
   };
 
   quit = () => {

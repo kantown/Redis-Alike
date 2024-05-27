@@ -12,3 +12,7 @@ export const toSimpleError = (message: string) => {
 export const toBulkString = (message: string) => {
   return `${FIRST_BYTES_CODES.BULK_STRING}${message.length}${EOL}${message}${EOL}`;
 };
+
+export const toMapString = (array: string[]) => {
+  return `*${array.length}${array.join("")}`;
+};
