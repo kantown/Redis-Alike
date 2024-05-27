@@ -40,8 +40,7 @@ const runNewServer = ({
 
 if (!!replicaAddress && !!replicaPort) {
   runNewServer({
-    address: replicaAddress === "localhost" ? "127.0.0.1" : replicaAddress,
-    port: Number(replicaPort),
+    port: PORT,
     role: "slave",
   });
 } else {
