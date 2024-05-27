@@ -19,6 +19,7 @@ const runNewServer = ({
   port: number;
   role?: "master" | "slave";
 }) => {
+  console.log(address, port, role);
   const server: net.Server = net.createServer((connection: net.Socket) => {
     // Handle connection
     connection.on("data", (data) => {
@@ -37,12 +38,15 @@ const runNewServer = ({
   server.listen(port, address);
 };
 
-runNewServer({ port: PORT, role: "master" });
-
 if (!!replicaAddress && !!replicaPort) {
   runNewServer({
     address: replicaAddress === "localhost" ? "127.0.0.1" : replicaAddress,
     port: Number(replicaPort),
     role: "slave",
+  });
+} else {
+  runNewServer({
+    port: PORT,
+    role: "master",
   });
 }
