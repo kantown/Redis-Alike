@@ -21,7 +21,7 @@ const runNewServer = ({
   port: number;
   role?: "master" | "slave";
 }) => {
-  const isReplica = role === "master";
+  const isReplica = role === "slave";
   const server: net.Server = net.createServer((connection: net.Socket) => {
     const requestHandler = new RespInterpreter(
       connection,
@@ -38,7 +38,7 @@ const runNewServer = ({
 
     connection.on("ready", () => {
       if (isReplica) {
-        requestHandler.startHandShake()
+        requestHandler.startHandShake();
       }
     });
   });
